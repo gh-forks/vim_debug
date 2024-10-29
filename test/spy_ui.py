@@ -16,7 +16,7 @@ class SpyUI:
         self.logger = logging.getLogger("SpyUI")
         self.logger.setLevel(logging.DEBUG)
         lhandl = logging.NullHandler() if not os.environ.get('CI') \
-            else logging.FileHandler("spy_ui.log")
+            else logging.FileHandler("spy_ui.log", encoding='utf-8')
         fmt = "%(asctime)s [%(levelname)s]: %(message)s"
         lhandl.setFormatter(logging.Formatter(fmt))
         self.logger.addHandler(lhandl)
@@ -35,7 +35,8 @@ class SpyUI:
     def run(self):
         """Run the loop."""
         def _req(name, arg):
-            print("req", name, arg)
+            # print("req", name, arg, file=sys.stderr)
+            pass
         self.nvim.run_loop(_req, self._not)
 
     def close(self):
@@ -56,7 +57,8 @@ class SpyUI:
         if name == "redraw":
             self._redraw(args)
         else:
-            print(name, args)
+            # print(name, args, file=sys.stderr)
+            pass
 
     def _redraw(self, args):
         for arg in args:
@@ -84,7 +86,8 @@ class SpyUI:
                     self.logger.info("\n%s", self.screen)
                     self.screen = screen
             else:
-                print(cmd, par)
+                # print(cmd, par, file=sys.stderr)
+                pass
 
     def _grid_resize(self, gr, width, height):
         assert gr == 1
@@ -104,7 +107,7 @@ class SpyUI:
             for col in range(self.width):
                 self.grid[row][col] = ' '
 
-    def _grid_line(self, gr, row, col, cells):
+    def _grid_line(self, gr, row, col, cells, wrap, *args):
         assert gr == 1
         for cell in cells:
             text = cell[0]
